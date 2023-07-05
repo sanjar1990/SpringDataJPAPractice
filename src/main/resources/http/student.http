@@ -50,7 +50,7 @@ Content-Type: application/json
 ### delete student
 DELETE localhost:8080/student/1
 ### get by name
-GET localhost:8080/student/name?name=Alia
+GET localhost:8080/student/name?name=Ali
 ### get by gender
 GET localhost:8080/student/gender?gender=MALE
 ### get by date

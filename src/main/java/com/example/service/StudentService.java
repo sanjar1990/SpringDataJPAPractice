@@ -115,6 +115,7 @@ public class StudentService {
     }
 
     public String delete(Integer id) {
+        getById(id);
         studentRepository.deleteById(id);
         return "Student deleted";
     }

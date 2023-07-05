@@ -86,6 +86,7 @@ public class CourseService {
     }
 
     public String delete(Integer id) {
+        getById(id);
         courseRepository.deleteById(id);
         return "course is deleted!";
     }
