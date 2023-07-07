@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "student")
 public class StudentEntity {
@@ -30,4 +28,12 @@ public class StudentEntity {
     private Gender gender;
     @Column(name = "created_date")
     private LocalDateTime createdDate;
+
+    public StudentEntity(Integer id) {
+        this.id=id;
+    }
+
+    public StudentEntity() {
+
+    }
 }

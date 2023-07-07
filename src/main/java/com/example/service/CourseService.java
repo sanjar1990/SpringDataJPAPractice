@@ -8,6 +8,10 @@ import com.example.exception.AppBadRequestException;
 import com.example.exception.ItemNotFoundException;
 import com.example.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -96,7 +101,7 @@ public class CourseService {
         return optional.map(s->toDto(s)).orElseThrow(()-> new ItemNotFoundException("course not found"));
     }
 
-    public Object getByPrice(Double price) {
+    public List<CourseDto> getByPrice(Double price) {
         List<CourseEntity> courseEntityList=courseRepository.getByPrice(price);
         List<CourseDto>list=new LinkedList<>();
         courseEntityList.forEach(s->list.add(toDto(s)));
@@ -128,4 +133,29 @@ public class CourseService {
         if(courseDtoList.isEmpty()) throw new ItemNotFoundException("Course not found");
         return courseDtoList;
     }
+
+    public List<CourseDto> pagination(int page, int size){
+        Pageable pageable= PageRequest.of(page,size);
+        Page<CourseEntity> pageObj=courseRepository.findAll(pageable);
+        return pageObj.getContent().stream().map(s->toDto(s)).toList();
+    }
+    public List<CourseDto>paginationSorted(int page, int size, String sortType){
+        Sort sort=Sort.by(Sort.Direction.ASC,sortType);
+        Pageable pageable=PageRequest.of(page,size,sort);
+        Page<CourseEntity> pageObj=courseRepository.findAll(pageable);
+        return pageObj.stream().map(s->toDto(s)).toList();
+    }
+
+    public List<CourseDto>pageByPrice(int page, int size, double price){
+        Sort sort=Sort.by(Sort.Direction.DESC, "createdDate");
+        Pageable pageable=PageRequest.of(page,size,sort);
+        return courseRepository.findAllByPrice(pageable,price).getContent().stream().map(s->toDto(s)).toList();
+    }
+    public List<CourseDto>pageByPriceBetween(int page, int size, double from, double to){
+        Sort sort=Sort.by(Sort.Direction.DESC,"createdDate");
+        Pageable pageable=PageRequest.of(page, size, Sort.Direction.ASC, "createdDate");
+        return courseRepository.findAllByPriceBetween(pageable,from,to)
+                .getContent().stream().map(s->toDto(s)).collect(Collectors.toList());
+    }
+
 }

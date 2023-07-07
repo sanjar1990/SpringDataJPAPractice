@@ -24,4 +24,7 @@ public class CourseEntity {
     private Integer duration;
     @Column(name = "created_date")
     private LocalDateTime createdDate;
+    public CourseEntity(Integer courseId) {
+        this.setId(courseId);
+    }
 }

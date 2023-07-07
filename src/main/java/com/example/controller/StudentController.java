@@ -62,4 +62,25 @@ public class StudentController {
                                             @RequestParam("toDate") LocalDate toDate){
         return ResponseEntity.ok(studentService.getStudentBetweenDate(fromDate,toDate));
     }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<?>pagination(@RequestParam("page") int page,
+                                       @RequestParam("size") int size){
+        return ResponseEntity.ok(studentService.pagination(page-1,size));
+    }
+
+    @GetMapping("/pageByLevel")
+    public ResponseEntity<?>pageByLevel(@RequestParam("page") int page,
+                                        @RequestParam("size") int size,
+                                        @RequestParam("level") int level){
+        return ResponseEntity.ok(studentService.paginationByLevel(page-1,size,level));
+    }
+
+    @GetMapping("/pageByGender")
+    public ResponseEntity<?>pageByGender(@RequestParam("page") int page,
+                                         @RequestParam("size") int size,
+                                         @RequestParam("gender") Gender gender){
+        return ResponseEntity.ok(studentService.pagingByGender(page-1,size,gender));
+    }
+
 }

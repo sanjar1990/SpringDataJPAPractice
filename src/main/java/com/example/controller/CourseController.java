@@ -57,4 +57,29 @@ public class CourseController {
                                             @RequestParam("toDate") LocalDate toDate){
         return ResponseEntity.ok(courseService.getBetweenDate(fromDate,toDate));
     }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<?>pagination(@RequestParam("page") int page,
+                                       @RequestParam("size") int size){
+        return ResponseEntity.ok(courseService.pagination(page-1,size));
+    }
+    @GetMapping("/paginSort")
+    public ResponseEntity<?> pagingSort(@RequestParam("page") int page,
+                                        @RequestParam("size") int size,
+                                        @RequestParam("sort") String sort){
+        return ResponseEntity.ok(courseService.paginationSorted(page-1,size,sort));
+    }
+    @GetMapping("/pagePrice")
+    public ResponseEntity<?> pageByPrice(@RequestParam("page") int page,
+                                         @RequestParam("size") int size,
+                                         @RequestParam("price") double price){
+        return ResponseEntity.ok(courseService.pageByPrice(page-1,size,price));
+    }
+    @GetMapping("/pagePriceBetween")
+    public ResponseEntity<?> pagePriceBetween(@RequestParam("page") int page,
+                                              @RequestParam("size") int size,
+                                              @RequestParam("from") double from,
+                                              @RequestParam("to") double to){
+        return ResponseEntity.ok(courseService.pageByPriceBetween(page-1,size,from,to));
+    }
 }

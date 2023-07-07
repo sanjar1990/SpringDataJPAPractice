@@ -3,8 +3,8 @@ POST localhost:8080/course/create
 Content-Type: application/json
 
 {
-  "name": "Java",
-  "duration": 3,
+  "name": "JAVA",
+  "duration": 2,
   "price": 100
 }
 
@@ -35,3 +35,15 @@ GET  localhost:8080/course/duration?duration=3
 GET localhost:8080/course/betweenPrice?fromPrice=10&toPrice=101
 ### get by date between
 GET localhost:8080/course/getBetweenDate?fromDate=2023-05-05&toDate=2023-07-07
+### pagination
+GET localhost:8080/course/pagination?page=1&size=10
+
+### pagination sorted
+GET localhost:8080/course/paginSort?page=1&size=10&sort=createdDate
+
+### pagination by price
+GET localhost:8080/course/pagePrice?page=1&size=10&price=100.0
+
+### page by price between
+
+GET localhost:8080/course/pagePriceBetween?page=1&size=10&from=10&to=101
