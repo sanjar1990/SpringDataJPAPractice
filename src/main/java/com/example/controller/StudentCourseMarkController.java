@@ -4,6 +4,7 @@ import com.example.dto.StudentCourseMarkDTO;
 import com.example.repository.StudentRepository;
 import com.example.service.StudentCourseMarkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,4 +55,93 @@ public class StudentCourseMarkController {
                                            @PathVariable Integer id){
         return ResponseEntity.ok(scmService.getBetweenDate(from, to, id));
     }
+    @GetMapping("/getMarks/{id}")
+    public ResponseEntity<?>getMarks(@PathVariable Integer id){
+        return ResponseEntity.ok(scmService.studentMark(id));
+    }
+    @GetMapping("/getByCourse")
+    public ResponseEntity<?> getByCourse(@RequestParam("courseName") String  courseName){
+        return ResponseEntity.ok(scmService.getByCourse(courseName));
+    }
+
+    @GetMapping("/getLastMark/{id}")
+    public ResponseEntity<?>getLastMark(@PathVariable Integer id){
+        return ResponseEntity.ok(scmService.getLastMark(id));
+    }
+
+    @GetMapping("/top3Mark/{id}")
+    public ResponseEntity<?>top3Mar(@PathVariable Integer id){
+        return ResponseEntity.ok(scmService.top3Mark(id));
+    }
+
+    @GetMapping("/firstMark/{id}")
+    public ResponseEntity<?>firstMark(@PathVariable Integer id){
+        return ResponseEntity.ok(scmService.firstMark(id));
+    }
+
+    @GetMapping("/firstMarkByCourseName")
+    public ResponseEntity<?>firstMarkByCourseName(@RequestParam("courseName") String courseName,
+                                                  @RequestParam("studentId") Integer studentId){
+        return ResponseEntity.ok(scmService.firstMarkByCourseName(courseName,studentId));
+    }
+
+    @GetMapping("/topMarkByCourse")
+    public ResponseEntity<?>topMarkByCourse(@RequestParam("studentId") Integer studentId,
+                                            @RequestParam("corseName") String courseName){
+        return ResponseEntity.ok(scmService.topMarkByCourse(studentId,courseName));
+    }
+
+    @GetMapping("/averageMark/{studentId}")
+    public ResponseEntity<?>averageMark(@PathVariable Integer studentId){
+        return ResponseEntity.ok(scmService.averageMark(studentId));
+    }
+    @GetMapping("/avgMarkByCourse")
+    public ResponseEntity<?>averageMarkByCourse(@RequestParam("studentId") Integer studentId,
+                                                @RequestParam("courseName") String courseName){
+        return ResponseEntity.ok(scmService.averageMarkByCourse(studentId,courseName));
+    }
+
+    @GetMapping("/greaterMark")
+    public ResponseEntity<?>greaterMark(@RequestParam("studentId") Integer studentId,
+                                        @RequestParam("mark") Double mark){
+        return ResponseEntity.ok(scmService.greaterMark(studentId,mark));
+    }
+
+    @GetMapping("/getTopMarkByCourse")
+    public ResponseEntity<?>getTopMarkByCourse(@RequestParam("courseName") String courseName){
+        return ResponseEntity.ok(scmService.getTopMarkByCourse(courseName));
+    }
+    @GetMapping("/getAverageMarkByCourse")
+    public ResponseEntity<?> getAverageMarkByCourse(@RequestParam("name") String courseName){
+        return ResponseEntity.ok(scmService.getAverageMarkByCourse(courseName));
+    }
+    @GetMapping("/getTotalMarkByCourse")
+    public ResponseEntity<?> getTotalMarkByCourse(@RequestParam("courseName") String courseName){
+        return ResponseEntity.ok(scmService.getTotalMarkByCourse(courseName));
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<?>pagination(@RequestParam("page") Integer page,
+                                       @RequestParam("size") Integer size){
+        return ResponseEntity.ok(scmService.pagination(page-1,size));
+    }
+
+    @GetMapping("/paginationByStudentId")
+    public ResponseEntity<?>paginationByStudentId(@RequestParam("studentId") Integer studentId,
+                                                  @RequestParam("page") Integer page,
+                                                  @RequestParam("size") Integer size){
+        return ResponseEntity.ok(scmService.paginationByStudentId(studentId,page,size));
+    }
+
+    @GetMapping("/paginationByCourseId")
+    public ResponseEntity<?>paginationByCourseId(@RequestParam("courseId") Integer courseId,
+                                                 @RequestParam("page") Integer page,
+                                                 @RequestParam("size") Integer size){
+        return ResponseEntity.ok(scmService.paginationByCourseId(courseId,page-1,size));
+    }
+
+
+
+
+
 }

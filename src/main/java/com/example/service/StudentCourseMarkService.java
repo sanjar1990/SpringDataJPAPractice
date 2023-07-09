@@ -7,9 +7,14 @@ import com.example.entity.StudentEntity;
 import com.example.exception.ItemNotFoundException;
 import com.example.mapper.CourseMapper;
 import com.example.mapper.SCMMapper;
+import com.example.mapper.SCMMapperByMark;
 import com.example.mapper.StudentMapper;
 import com.example.repository.StudentCourseMarkRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,6 +23,7 @@ import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentCourseMarkService {
@@ -127,4 +133,83 @@ public class StudentCourseMarkService {
 
         return entityList.stream().map(this::toDto).toList();
     }
+    public List<Double> studentMark(Integer id){
+        List<Double>mark=scmRepository.getAllMarks(id);
+        System.out.println(mark);
+        return mark;
+    }
+
+    public List<StudentCourseMarkDTO> getByCourse(String  courseName){
+        return scmRepository.getStudentMarkByCourse(courseName).stream().map(s->toDto(s)).toList();
+    }
+
+    public StudentCourseMarkDTO getLastMark(Integer id){
+        return toDto(scmRepository.getStudentLastMark(id));
+    }
+    public List<SCMMapperByMark> top3Mark(Integer studentId){
+        return scmRepository.top3Mark(studentId);
+    }
+    //13
+    public SCMMapperByMark firstMark(Integer studentId ){
+        return scmRepository.firstMark(studentId);
+    }
+    //14
+    public SCMMapperByMark firstMarkByCourseName(String courseName,Integer studentId){
+        return scmRepository.firstMarkByCourseName( studentId, courseName);
+    }
+
+    //15
+    public SCMMapperByMark topMarkByCourse(Integer studentId, String curseName){
+        return scmRepository.topMarkByCourse(studentId,curseName);
+    }
+    //16
+    public Double averageMark(Integer studentId){
+        return scmRepository.averageMark(studentId);
+    }
+    //17
+    public Double averageMarkByCourse(Integer studentId, String courseName){
+        Double avgMark=scmRepository.averageMarkByCourse(studentId,courseName);
+        System.out.println(avgMark);
+        return avgMark;
+    }
+
+    //18
+   public Integer greaterMark(Integer studentId, Double mark){
+        return scmRepository.greaterMark(studentId,mark);
+   }
+   public Double getTopMarkByCourse(String courseName){
+        return scmRepository.getTopMarkByCourse(courseName);
+   }
+   //20
+    public Double getAverageMarkByCourse(String courseName){
+        return scmRepository.getAverageMarkByCourse(courseName);
+    }
+    //21
+    public Long getTotalMarkByCourse(String courseName){
+        return scmRepository.getTotalMarkByCourse(courseName);
+    }
+    //22
+    public PageImpl<StudentCourseMarkDTO> pagination(Integer page, Integer size){
+        Sort sort=Sort.by(Sort.Direction.DESC,"createdDate");
+        Pageable pageable= PageRequest.of(page,size,sort);
+        Page<StudentCourseMarkEntity>pageObj=scmRepository.findAll(pageable);
+        List<StudentCourseMarkDTO> dtoList=pageObj.getContent().stream().map(s->toDto(s)).toList();
+        return new PageImpl<>(dtoList,pageable, pageObj.getTotalElements());
+    }
+    //23
+    public PageImpl<StudentCourseMarkDTO>paginationByStudentId(Integer studentId, Integer page, Integer size){
+        Page<StudentCourseMarkEntity> pageObj=scmRepository.findAllByStudentId(new StudentEntity(studentId),
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,"createdDate")));
+        return new PageImpl<StudentCourseMarkDTO>(pageObj.getContent().stream().map(s->toDto(s)).collect(Collectors.toList()),
+                pageObj.getPageable(), pageObj.getTotalElements());
+    }
+    public PageImpl<StudentCourseMarkDTO> paginationByCourseId(Integer courseId, Integer page, Integer size){
+        Page<StudentCourseMarkEntity> pageObj=scmRepository.findAllByCourseId(new CourseEntity(courseId),
+                PageRequest.of(page,size));
+        return new PageImpl<StudentCourseMarkDTO>(pageObj.getContent().stream().map(s->toDto(s)).collect(Collectors.toList()),
+                pageObj.getPageable(),pageObj.getTotalElements());
+    }
+
+
+
 }

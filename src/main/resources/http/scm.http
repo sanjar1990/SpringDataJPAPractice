@@ -4,8 +4,8 @@ Content-Type: application/json
 
 {
   "studentId": 1,
-  "courseId": 1,
-  "mark": 3
+  "courseId": 2,
+  "mark": 4
 }
 
 ### update
@@ -30,3 +30,46 @@ GET localhost:8080/scm/getAll
 GET localhost:8080/scm/getByDate/1?date=2023-07-07
 ### get All between date
 GET localhost:8080/scm/getBetwenDate/1?from=2023-07-05&to=2023-07-10
+
+### get marks
+GET localhost:8080/scm/getMarks/2
+
+### get by course
+GET localhost:8080/scm/getByCourse?courseName=JAVA
+
+### get last mark
+GET localhost:8080/scm/getLastMark/1
+
+### top 3 mark
+GET localhost:8080/scm/top3Mark/1
+### first mark
+GET localhost:8080/scm/firstMark/1
+
+### first mark by course name
+GET localhost:8080/scm/firstMarkByCourseName?courseName=JAVA&studentId=1
+
+### topMarkByCourse
+GET localhost:8080/scm/topMarkByCourse?corseName=JAVA&studentId=1
+
+### average Mark
+GET localhost:8080/scm/averageMark/1
+
+### averageMarkByCourse
+GET localhost:8080/scm/avgMarkByCourse?studentId=1&courseName=Phyton
+### greater mark
+GET localhost:8080/scm/greaterMark?studentId=1&mark=3
+
+### getTopMarkByCourse
+GET localhost:8080/scm/getTopMarkByCourse?courseName=JAVA
+
+### getAverageMarkByCourse
+GET localhost:8080/scm/getAverageMarkByCourse?name=Phyton
+###  getTotalMarkByCourse
+GET localhost:8080/scm/getTotalMarkByCourse?courseName=JAVA
+### pagination
+GET localhost:8080/scm/pagination?page=1&size=4
+
+### paginationByStudentId
+GET localhost:8080/scm/paginationByStudentId?studentId=1&page=1&size=4
+###paginationByCourseId
+GET localhost:8080/scm/paginationByCourseId?courseId=1&page=1&size=4

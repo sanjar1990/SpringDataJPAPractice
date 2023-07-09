@@ -3,9 +3,9 @@ POST localhost:8080/course/create
 Content-Type: application/json
 
 {
-  "name": "JAVA",
-  "duration": 2,
-  "price": 100
+  "name": "C++",
+  "duration": 3,
+  "price": 200
 }
 
 ### get by id
@@ -15,7 +15,7 @@ GET localhost:8080/course/1
 GET localhost:8080/course/getAll
 
 ### update course
-PUT localhost:8080/course/1
+PUT localhost:8080/course/2
 Content-Type: application/json
 
 {
@@ -47,3 +47,4 @@ GET localhost:8080/course/pagePrice?page=1&size=10&price=100.0
 ### page by price between
 
 GET localhost:8080/course/pagePriceBetween?page=1&size=10&from=10&to=101
+
