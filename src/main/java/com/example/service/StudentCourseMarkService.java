@@ -10,6 +10,7 @@ import com.example.mapper.SCMMapper;
 import com.example.mapper.SCMMapperByMark;
 import com.example.mapper.StudentMapper;
 import com.example.repository.StudentCourseMarkRepository;
+import com.example.repository.StudentRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 public class StudentCourseMarkService {
     @Autowired
     private StudentCourseMarkRepository scmRepository;
+    @Autowired
+    private StudentRepository studentRepository;
     public StudentCourseMarkDTO create(StudentCourseMarkDTO scmDTO) {
         check(scmDTO);
         StudentCourseMarkEntity scmEntity=scmRepository.save(toEntity(scmDTO));
@@ -62,39 +65,69 @@ public class StudentCourseMarkService {
         }
     }
 
-    public StudentCourseMarkDTO update(StudentCourseMarkDTO scmDTO, Integer id) {
-        Optional<StudentCourseMarkEntity> optional=scmRepository.findById(id);
-        if(optional.isEmpty()){
-            throw new ItemNotFoundException("Create entity first");
-        }
-        StudentCourseMarkEntity scmEntity=optional.get();
-        scmEntity.setMark(scmDTO.getMark());
-        scmEntity.setCourseId(new CourseEntity(scmDTO.getCourseId()));
-        scmEntity.setStudentId(new StudentEntity(scmDTO.getStudentId()));
-        System.out.println(scmEntity);
-        scmRepository.save(scmEntity);
-        scmDTO.setId(scmEntity.getId());
-        scmDTO.setCreatedDate(scmEntity.getCreatedDate());
-        return scmDTO;
+//    public StudentCourseMarkDTO update(StudentCourseMarkDTO scmDTO, Integer id) {
+//        Optional<StudentCourseMarkEntity> optional=scmRepository.findById(id);
+//        if(optional.isEmpty()){
+//            throw new ItemNotFoundException("Create entity first");
+//        }
+//        StudentCourseMarkEntity scmEntity=optional.get();
+//        scmEntity.setMark(scmDTO.getMark());
+//        scmEntity.setCourseId(new CourseEntity(scmDTO.getCourseId()));
+//        scmEntity.setStudentId(new StudentEntity(scmDTO.getStudentId()));
+//        System.out.println(scmEntity);
+//        scmRepository.save(scmEntity);
+//        scmDTO.setId(scmEntity.getId());
+//        scmDTO.setCreatedDate(scmEntity.getCreatedDate());
+//        return scmDTO;
+//    }
+    //2
+    public String update(StudentCourseMarkDTO scmDTO, Integer id) {
+        return scmRepository.update(scmDTO.getMark(), id)>0?"updated":"not updated";
     }
 
+//    public StudentCourseMarkDTO getById(Integer id) {
+//        Optional<StudentCourseMarkEntity> optional=scmRepository.findById(id);
+//        if(optional.isEmpty()) throw new ItemNotFoundException("Item not found");
+//        StudentCourseMarkEntity scmEntity=optional.get();
+//        return toDto(scmEntity);
+//    }
+
+    //3
     public StudentCourseMarkDTO getById(Integer id) {
-        Optional<StudentCourseMarkEntity> optional=scmRepository.findById(id);
-        if(optional.isEmpty()) throw new ItemNotFoundException("Item not found");
-        StudentCourseMarkEntity scmEntity=optional.get();
-        return toDto(scmEntity);
+        StudentCourseMarkEntity optional=scmRepository.getById(id);
+        if(optional==null) throw new ItemNotFoundException("Item not found");
+        return toDto(scmRepository.getById(id));
     }
+//    public SCMMapper getDetail(Integer id) {
+//    Optional<StudentCourseMarkEntity>optional=scmRepository.findById(id);
+//    if(optional.isEmpty()) throw new ItemNotFoundException("Item not found");
+//    StudentCourseMarkEntity scmEntity=optional.get();
+//    SCMMapper scmMapper=new SCMMapper();
+//    scmMapper.setId(scmEntity.getId());
+//        StudentMapper studentMapper=new StudentMapper();
+//        studentMapper.setName(scmEntity.getStudentId().getName());
+//        studentMapper.setSurname(scmEntity.getStudentId().getSurname());
+//        studentMapper.setId(scmEntity.getStudentId().getId());
+//    scmMapper.setStudentMapper(studentMapper);
+//        CourseMapper courseMapper=new CourseMapper();
+//        courseMapper.setName(scmEntity.getCourseId().getName());
+//        courseMapper.setId(scmEntity.getCourseId().getId());
+//        scmMapper.setCourseMapper(courseMapper);
+//        return scmMapper;
+//    }
+
+    //4
+
     public SCMMapper getDetail(Integer id) {
-    Optional<StudentCourseMarkEntity>optional=scmRepository.findById(id);
-    if(optional.isEmpty()) throw new ItemNotFoundException("Item not found");
-    StudentCourseMarkEntity scmEntity=optional.get();
-    SCMMapper scmMapper=new SCMMapper();
-    scmMapper.setId(scmEntity.getId());
+        StudentCourseMarkEntity scmEntity=scmRepository.getById(id);
+        if(scmEntity==null) throw new ItemNotFoundException("Item not found");
+        SCMMapper scmMapper=new SCMMapper();
+        scmMapper.setId(scmEntity.getId());
         StudentMapper studentMapper=new StudentMapper();
         studentMapper.setName(scmEntity.getStudentId().getName());
         studentMapper.setSurname(scmEntity.getStudentId().getSurname());
         studentMapper.setId(scmEntity.getStudentId().getId());
-    scmMapper.setStudentMapper(studentMapper);
+        scmMapper.setStudentMapper(studentMapper);
         CourseMapper courseMapper=new CourseMapper();
         courseMapper.setName(scmEntity.getCourseId().getName());
         courseMapper.setId(scmEntity.getCourseId().getId());
@@ -102,18 +135,31 @@ public class StudentCourseMarkService {
         return scmMapper;
     }
 
-    public String delete(Integer id) {
-    getById(id);
-        scmRepository.deleteById(id);
-    return "Deleted";
-    }
+//    public String delete(Integer id) {
+//    getById(id);
+//        scmRepository.deleteById(id);
+//    return "Deleted";
+//    }
+    //5
+public String delete(Integer id) {
+  return scmRepository.deleteStudentCourseMarkEntity(id)>0?"deleted":"not deleted";
+}
 
-    public List<StudentCourseMarkDTO> getAll() {
-    Iterable<StudentCourseMarkEntity> iterable=scmRepository.findAll();
+//    public List<StudentCourseMarkDTO> getAll() {
+//    Iterable<StudentCourseMarkEntity> iterable=scmRepository.findAll();
+//    List<StudentCourseMarkDTO> scmList=new LinkedList<>();
+//    iterable.forEach(s->scmList.add(toDto(s)));
+//    return scmList;
+//    }
+    //6
+public List<StudentCourseMarkDTO> getAll() {
+    Iterable<StudentCourseMarkEntity> iterable=scmRepository.getAll();
     List<StudentCourseMarkDTO> scmList=new LinkedList<>();
     iterable.forEach(s->scmList.add(toDto(s)));
     return scmList;
-    }
+}
+
+
 
     public List<StudentCourseMarkDTO> getByDate(LocalDate date, Integer id) {
         List<StudentCourseMarkEntity>entityList=scmRepository.
@@ -123,10 +169,12 @@ public class StudentCourseMarkService {
         return entityList.stream().map(this::toDto).toList();
 
     }
-
+    //1
     public List<StudentCourseMarkDTO> getBetweenDate(LocalDate from, LocalDate to, Integer id) {
+        Optional<StudentEntity> optional=studentRepository.findById(id);
+        if(optional.isEmpty()) throw new ItemNotFoundException("Student not found");
         List<StudentCourseMarkEntity>entityList=scmRepository.findAllByStudentIdAndCreatedDateBetween(
-                new StudentEntity(id),
+                optional.get(),
                 LocalDateTime.of(from,LocalTime.MIN),
                 LocalDateTime.of(to,LocalTime.MAX)
         );

@@ -54,7 +54,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getByGender(gender));
     }
     @GetMapping("/date")
-    public ResponseEntity<?> getByDate(@RequestParam("date")LocalDateTime createdDate){
+    public ResponseEntity<?> getByDate(@RequestParam("date")LocalDate createdDate){
         return ResponseEntity.ok(studentService.getByDate(createdDate));
     }
     @GetMapping("/between")

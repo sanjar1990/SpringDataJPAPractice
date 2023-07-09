@@ -13,9 +13,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -32,12 +34,18 @@ public class StudentService {
         return studentDto;
     }
 
+//    public StudentDto getById(Integer id) {
+//        Optional<StudentEntity> optional=studentRepository.findById(id);
+//        return optional.map(s->{
+//            return toDto(s);
+//        }).orElseThrow(()->{throw new ItemNotFoundException("Student not found");
+//        });
+//    }
+    //3
     public StudentDto getById(Integer id) {
-        Optional<StudentEntity> optional=studentRepository.findById(id);
-        return optional.map(s->{
-            return toDto(s);
-        }).orElseThrow(()->{throw new ItemNotFoundException("Student not found");
-        });
+        StudentEntity studentEntity=studentRepository.getStudentById(id);
+        if(studentEntity==null) throw new ItemNotFoundException("Student not found");
+        return toDto(studentEntity);
     }
 
     public StudentDto toDto(StudentEntity studentEntity){
@@ -87,8 +95,20 @@ public class StudentService {
         return studentDtoList;
     }
 
+//    public List<StudentDto> getAllStudent() {
+//        Iterable<StudentEntity> list=studentRepository.findAll();
+//        List<StudentDto> dtoList=new LinkedList<>();
+//        list.forEach(s->{
+//            dtoList.add(toDto(s));
+//        });
+//        if(dtoList.isEmpty()) throw new ItemNotFoundException("Student not found");
+//
+//        return dtoList;
+//    }
+
+    //2
     public List<StudentDto> getAllStudent() {
-        Iterable<StudentEntity> list=studentRepository.findAll();
+        Iterable<StudentEntity> list=studentRepository.getAllStudent();
         List<StudentDto> dtoList=new LinkedList<>();
         list.forEach(s->{
             dtoList.add(toDto(s));
@@ -97,33 +117,49 @@ public class StudentService {
 
         return dtoList;
     }
+//    public StudentDto update(StudentDto studentDto, Integer id) {
+//        Optional<StudentEntity> optional=studentRepository.findById(id);
+//        if(optional.isEmpty()){
+//            throw new ItemNotFoundException("Student not found");
+//        }
+//        StudentEntity studentEntity=optional.get();
+//          studentEntity.setName(studentDto.getName());
+//        studentEntity.setSurname(studentDto.getSurname());
+//        studentEntity.setAge(studentDto.getAge());
+//        studentEntity.setGender(studentDto.getGender());
+//        studentEntity.setLevel(studentDto.getLevel());
+//          studentRepository.save(studentEntity);
+//          studentDto.setId(studentEntity.getId());
+//          studentDto.setCreatedDate(studentEntity.getCreatedDate());
+//          return studentDto;
+//    }
 
-    public StudentDto update(StudentDto studentDto, Integer id) {
-        Optional<StudentEntity> optional=studentRepository.findById(id);
-        if(optional.isEmpty()){
-            throw new ItemNotFoundException("Student not found");
-        }
-        StudentEntity studentEntity=optional.get();
-          studentEntity.setName(studentDto.getName());
-        studentEntity.setSurname(studentDto.getSurname());
-        studentEntity.setAge(studentDto.getAge());
-        studentEntity.setGender(studentDto.getGender());
-        studentEntity.setLevel(studentDto.getLevel());
-          studentRepository.save(studentEntity);
-          studentDto.setId(studentEntity.getId());
-          studentDto.setCreatedDate(studentEntity.getCreatedDate());
-          return studentDto;
+    public String update(StudentDto studentDto, Integer id) {
+        return studentRepository.updateStudent(id,studentDto.getName())>0?"student updated":"student not updated";
     }
 
+//    public String delete(Integer id) {
+//        getById(id);
+//        studentRepository.deleteById(id);
+//        return "Student deleted";
+//    }
+
+    //5
     public String delete(Integer id) {
         getById(id);
-        studentRepository.deleteById(id);
-        return "Student deleted";
+
+        return studentRepository.deleteStudentById(id)>0?"Student deleted":"student not deleted";
     }
 
-    public List<StudentDto> getByName(String name) {
-        List<StudentEntity> entityList=studentRepository.getByName( name);
 
+//    public List<StudentDto> getByName(String name) {
+//        List<StudentEntity> entityList=studentRepository.getByName( name);
+//
+//        return entityList.stream().map(s->toDto(s)).toList();
+//    }
+    //6
+    public List<StudentDto> getByName(String name) {
+        List<StudentEntity> entityList=studentRepository.getStudentByName( name);
         return entityList.stream().map(s->toDto(s)).toList();
     }
     public List<StudentDto> getByGender(Gender data) {
@@ -131,15 +167,20 @@ public class StudentService {
         return studentEntity.stream().map(s->toDto(s)).toList();
     }
 
-    public StudentDto getByDate(LocalDateTime createdDate) {
-       Optional<StudentEntity> optional= studentRepository.getByCreatedDate(createdDate);
-       if(optional.isEmpty()){
-           throw new ItemNotFoundException("Student not found");
-       }
-       return toDto(optional.get());
+//    public List<StudentDto> getByDate(LocalDate createdDate) {
+//        List<StudentEntity> entityList= studentRepository.findAllByCreatedDateBetween(LocalDateTime.of(createdDate, LocalTime.MIN),
+//                LocalDateTime.of(createdDate,LocalTime.MAX));
+//        return entityList.stream().map(s->toDto(s)).collect(Collectors.toList());
+//    }
+    //7
+    public List<StudentDto> getByDate(LocalDate createdDate) {
+        List<StudentEntity> entityList= studentRepository.getStudentListByDate(LocalDateTime.of(createdDate, LocalTime.MIN),
+                LocalDateTime.of(createdDate,LocalTime.MAX));
+
+        return entityList.stream().map(s->toDto(s)).collect(Collectors.toList());
     }
     public List<StudentDto> getStudentBetweenDate(LocalDate fromDate, LocalDate toDate) {
-        List<StudentEntity> studentEntityList=studentRepository.getByCreatedDateBetween(LocalDateTime.of(fromDate.getYear(),fromDate.getMonth(),fromDate.getDayOfMonth(),0,0),
+        List<StudentEntity> studentEntityList=studentRepository.getStudentListByDate(LocalDateTime.of(fromDate.getYear(),fromDate.getMonth(),fromDate.getDayOfMonth(),0,0),
                 LocalDateTime.of(toDate.getYear(),toDate.getMonth(),toDate.getDayOfMonth(),0,0));
         if(studentEntityList.isEmpty()) throw new ItemNotFoundException("Students not found");
         List<StudentDto> list=new LinkedList<>();

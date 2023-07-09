@@ -9,19 +9,19 @@ Content-Type: application/json
 }
 
 ### update
-PUT localhost:8080/scm/1
+PUT localhost:8080/scm/2
 Content-Type: application/json
 
 {
   "studentId": 1,
   "courseId": 1,
-  "mark": 4
+  "mark": 65
 }
 
 ### get by id
 GET localhost:8080/scm/1
 ### get detail by id
-GET localhost:8080/scm/withDetail/1
+GET localhost:8080/scm/withDetail/2
 ### delete
 DELETE localhost:8080/scm/1
 ### get ALL

@@ -6,10 +6,12 @@ import com.example.entity.StudentEntity;
 import com.example.mapper.SCMMapperByMark;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
@@ -17,7 +19,12 @@ import java.util.List;
 
 public interface StudentCourseMarkRepository extends CrudRepository<StudentCourseMarkEntity, Integer>,
         PagingAndSortingRepository<StudentCourseMarkEntity, Integer> {
-    List<StudentCourseMarkEntity>findAllByStudentIdAndCreatedDateBetween(StudentEntity id,LocalDateTime from, LocalDateTime to);
+//    List<StudentCourseMarkEntity>findAllByStudentIdAndCreatedDateBetween(StudentEntity id,LocalDateTime from, LocalDateTime to);
+    @Query("from StudentCourseMarkEntity  " +
+            "where studentId=:id and createdDate>:from and createdDate<:to")
+    List<StudentCourseMarkEntity>findAllByStudentIdAndCreatedDateBetween(@Param("id") StudentEntity id,
+                                                                         @Param("from") LocalDateTime from,
+                                                                         @Param("to") LocalDateTime to);
     @Query("select s.mark from StudentCourseMarkEntity as s where s.id=:id order by s.createdDate desc ")
     List<Double> getAllMarks(@Param("id") Integer id);
     @Query("from StudentCourseMarkEntity as scm inner join scm.courseId as c where c.name=:courseName order by scm.createdDate desc")
@@ -82,6 +89,25 @@ public interface StudentCourseMarkRepository extends CrudRepository<StudentCours
     //23
     Page<StudentCourseMarkEntity>findAllByStudentId(StudentEntity studentEntity, Pageable pageable);
     Page<StudentCourseMarkEntity>findAllByCourseId(CourseEntity courseEntity,Pageable pageable);
+
+    //2
+    @Transactional
+    @Modifying
+    @Query("update StudentCourseMarkEntity set mark=:mark where id=:id")
+    int update(@Param("mark") Double mark,
+               @Param("id") Integer id);
+    //3
+    @Query("from StudentCourseMarkEntity where id=?1")
+    StudentCourseMarkEntity getById(Integer id);
+
+    //5
+    @Query("delete from StudentCourseMarkEntity where id=?1")
+    int deleteStudentCourseMarkEntity(Integer id);
+
+    //6
+
+    @Query("from StudentCourseMarkEntity ")
+    List<StudentCourseMarkEntity> getAll();
 
 
 
