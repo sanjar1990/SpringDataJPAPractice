@@ -1,12 +1,15 @@
 package com.example.service;
 
 import com.example.dto.CourseDto;
+import com.example.dto.CourseFilterDto;
+import com.example.dto.FilterResultDto;
 import com.example.dto.StudentDto;
 import com.example.entity.CourseEntity;
 import com.example.entity.StudentEntity;
 import com.example.exception.AppBadRequestException;
 import com.example.exception.ItemNotFoundException;
 import com.example.repository.CourseRepository;
+import com.example.repository.CustomCourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
+    @Autowired
+    private CustomCourseRepository customCourseRepository;
     public CourseDto create(CourseDto courseDto) {
         check(courseDto);
         CourseEntity courseEntity=toEntity(courseDto);
@@ -195,6 +200,12 @@ public List<CourseDto> getBetweenDate(LocalDate fromDate, LocalDate toDate) {
         Pageable pageable=PageRequest.of(page, size, Sort.Direction.ASC, "createdDate");
         return courseRepository.findAllByPriceBetween(pageable,from,to)
                 .getContent().stream().map(s->toDto(s)).collect(Collectors.toList());
+    }
+    //13
+    public FilterResultDto<CourseDto> filterPagination(CourseFilterDto courseFilterDto, Integer page, Integer size){
+        FilterResultDto<CourseEntity> result=customCourseRepository.filterPagination(courseFilterDto,page,size);
+        List<CourseDto> dtoList=result.getResultList().stream().map(s->toDto(s)).toList();
+        return new FilterResultDto<>(dtoList,result.getTotalCount());
     }
 
 }

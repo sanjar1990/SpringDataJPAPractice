@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.dto.SCMFilterDTO;
 import com.example.dto.StudentCourseMarkDTO;
 import com.example.repository.StudentRepository;
 import com.example.service.StudentCourseMarkService;
@@ -140,6 +141,13 @@ public class StudentCourseMarkController {
         return ResponseEntity.ok(scmService.paginationByCourseId(courseId,page-1,size));
     }
 
+    @PostMapping("/filterPagination")
+
+    public ResponseEntity<?>filterPagination(@RequestBody SCMFilterDTO filterDTO,
+                                             @RequestParam("page") Integer page,
+                                             @RequestParam("size") Integer size){
+        return ResponseEntity.ok(scmService.filterPagination(filterDTO,page-1,size));
+    }
 
 
 

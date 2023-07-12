@@ -3,9 +3,9 @@ POST localhost:8080/student/create
 Content-Type: application/json
 
 {
-  "name": "Ali",
-  "surname": "Aliyev",
-  "gender": "MALE",
+  "name": "VAli",
+  "surname": "VAliyev",
+  "gender": "FEMALE",
   "age": 12,
   "level": 1
 }
@@ -63,3 +63,13 @@ GET localhost:8080/student/pagination?page=1&size=10
 GET localhost:8080/student/pageByLevel?page=1&size=10&level=1
 ### page by gender
 GET localhost:8080/student/pageByGender?page=1&size=10&gender=MALE
+### filter pagination
+POST localhost:8080/student/filterPagination?page=1&size=10
+Content-Type: application/json
+
+{
+  "name" : "Ali",
+  "surname": "Aliyev",
+  "fromDate": "2023-07-01",
+  "toDate": "2023-07-13"
+}

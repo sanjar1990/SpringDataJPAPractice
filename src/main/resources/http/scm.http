@@ -73,3 +73,12 @@ GET localhost:8080/scm/pagination?page=1&size=4
 GET localhost:8080/scm/paginationByStudentId?studentId=1&page=1&size=4
 ###paginationByCourseId
 GET localhost:8080/scm/paginationByCourseId?courseId=1&page=1&size=4
+
+### filterPagination
+POST localhost:8080/scm/filterPagination?page=2&size=10
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "markFrom": 2.2
+}

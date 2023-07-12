@@ -1,14 +1,14 @@
 package com.example.service;
 
+import com.example.dto.FilterResultDto;
+import com.example.dto.SCMFilterDTO;
 import com.example.dto.StudentCourseMarkDTO;
 import com.example.entity.CourseEntity;
 import com.example.entity.StudentCourseMarkEntity;
 import com.example.entity.StudentEntity;
 import com.example.exception.ItemNotFoundException;
-import com.example.mapper.CourseMapper;
-import com.example.mapper.SCMMapper;
-import com.example.mapper.SCMMapperByMark;
-import com.example.mapper.StudentMapper;
+import com.example.mapper.*;
+import com.example.repository.CustomSCMRepository;
 import com.example.repository.StudentCourseMarkRepository;
 import com.example.repository.StudentRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -32,6 +32,8 @@ public class StudentCourseMarkService {
     private StudentCourseMarkRepository scmRepository;
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private CustomSCMRepository customSCMRepository;
     public StudentCourseMarkDTO create(StudentCourseMarkDTO scmDTO) {
         check(scmDTO);
         StudentCourseMarkEntity scmEntity=scmRepository.save(toEntity(scmDTO));
@@ -257,7 +259,9 @@ public List<StudentCourseMarkDTO> getAll() {
         return new PageImpl<StudentCourseMarkDTO>(pageObj.getContent().stream().map(s->toDto(s)).collect(Collectors.toList()),
                 pageObj.getPageable(),pageObj.getTotalElements());
     }
+    //25
 
-
-
+    public FilterResultDto<SCMMapperFilterC>filterPagination(SCMFilterDTO filterDTO, Integer page, Integer size){
+        return customSCMRepository.filterPagination(filterDTO,page,size);
+    }
 }

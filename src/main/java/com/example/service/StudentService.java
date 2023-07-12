@@ -1,9 +1,12 @@
 package com.example.service;
+import com.example.dto.FilterResultDto;
 import com.example.dto.StudentDto;
+import com.example.dto.StudentFilterDto;
 import com.example.entity.StudentEntity;
 import com.example.enums.Gender;
 import com.example.exception.AppBadRequestException;
 import com.example.exception.ItemNotFoundException;
+import com.example.repository.CustomStudentRepository;
 import com.example.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private CustomStudentRepository customStudentRepository;
 
 
     public StudentDto create(StudentDto studentDto) {
@@ -209,7 +214,10 @@ public class StudentService {
         return pageObj.stream().map(s->toDto(s)).toList();
     }
 
-//    public List<StudentDto>paginationFilter(int page, int size){
-//
-//    }
+    //12
+    public FilterResultDto<StudentDto> paginationFilter(StudentFilterDto filterDto, Integer page, Integer size){
+        FilterResultDto<StudentEntity> resultDto=customStudentRepository.filterPagination(filterDto,page,size);
+        List<StudentDto> dtoList=resultDto.getResultList().stream().map(s->toDto(s)).toList();
+        return new FilterResultDto<StudentDto>(dtoList,resultDto.getTotalCount());
+    }
 }
