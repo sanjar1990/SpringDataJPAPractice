@@ -3,16 +3,12 @@ package com.example.repository;
 import com.example.dto.FilterResultDto;
 import com.example.dto.SCMFilterDTO;
 import com.example.entity.CourseEntity;
-import com.example.entity.StudentCourseMarkEntity;
 import com.example.entity.StudentEntity;
-import com.example.exception.ItemNotFoundException;
-import com.example.mapper.SCMMapperFilter;
 import com.example.mapper.SCMMapperFilterC;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -21,10 +17,6 @@ import java.util.*;
 public class CustomSCMRepository {
     @Autowired
     private EntityManager entityManager;
-    @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
-    private CourseRepository courseRepository;
 
     public FilterResultDto<SCMMapperFilterC>filterPagination(SCMFilterDTO filterDTO, Integer page, Integer size){
         StringBuilder builder=new StringBuilder(" where 1=1");
@@ -34,33 +26,24 @@ public class CustomSCMRepository {
         StringBuilder countBuilder=new StringBuilder("Select count(sc.id) from StudentCourseMarkEntity as sc inner join sc.courseId as c " +
                 "inner join sc.studentId as s");
         Map<String, Object> params=new HashMap<>();
-        Optional<StudentEntity> studentEntity= Optional.empty();
-        Optional<CourseEntity> courseEntity=Optional.empty();
-        if(filterDTO.getStudentId()!=null ){
-           studentEntity =studentRepository.findById(filterDTO.getStudentId());
-           if(studentEntity.isEmpty()) throw new ItemNotFoundException("Item not found");
-        }
-        if (filterDTO.getCourseId()!=null){
-           courseEntity=courseRepository.findById(filterDTO.getCourseId());
-            if(courseEntity.isEmpty()) throw new ItemNotFoundException("Item not found");
-        }
+
 
         if(filterDTO.getCourseId()!=null){
             builder.append(" and sc.courseId=:courseId");
-            params.put("courseId",courseEntity.get());
+            params.put("courseId",new CourseEntity(filterDTO.getCourseId()));
         }
         if(filterDTO.getCourseName()!=null){
-            builder.append(" and c.name:courseName");
-            params.put("courseName",courseEntity.get().getName());
+            builder.append(" and c.name=:courseName");
+            params.put("courseName",filterDTO.getCourseName());
         }
         if(filterDTO.getStudentId()!=null){
             builder.append( " and sc.studentId=:studentId");
-            params.put("studentId",studentEntity.get());
+            params.put("studentId",new StudentEntity(filterDTO.getStudentId()));
         }
 
         if(filterDTO.getStudentName()!= null){
             builder.append(" and s.name=:studentName");
-            params.put("studentName",studentEntity.get().getName());
+            params.put("studentName",filterDTO.getStudentName());
         }
         if(filterDTO.getMarkFrom()!=null){
             builder.append(" and sc.mark>=:markFrom");
